@@ -75,21 +75,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              // **Новое поле "Повторить пароль"**
-              if (!isLogin) // Показываем только при регистрации
-                const TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Повторить пароль',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
               const SizedBox(height: 30),
               // Кнопка "Войти"
               ElevatedButton(
