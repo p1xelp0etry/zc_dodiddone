@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../scriens/profile.dart';
 import '../theme/theme.dart'; // Import the theme file
 
 class MainPage extends StatefulWidget {
@@ -13,7 +14,7 @@ class _MainPageState extends State<MainPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     Text('Задачи'),
     Text('Сегодня'),
-    Text('Профиль'),
+    ProfilePage(), // ProfilePage is now in the correct position
     Text('Выполнено'),
   ];
 
