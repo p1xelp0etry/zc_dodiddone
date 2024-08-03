@@ -25,6 +25,82 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  // Function to show the dialog for adding a new task
+  void _showAddTaskDialog() {
+    // Create a TextEditingController for each field
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+    DateTime? selectedDeadline; // Variable to store the selected deadline
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog( // Use Dialog instead of AlertDialog for custom width
+          child: Container(
+            width: 400, // Set the width of the dialog
+            padding: const EdgeInsets.all(20), // Add padding to the dialog
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Название задачи',
+                  ),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Описание',
+                  ),
+                ),
+                // Add a button to show the date picker
+                Padding( // Add padding to the button
+                  padding: const EdgeInsets.only(top: 20), // Add top padding
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Show the date picker
+                      showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                      ).then((pickedDate) {
+                        if (pickedDate != null) {
+                          // Show the time picker after the date is selected
+                          showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          ).then((pickedTime) {
+                            if (pickedTime != null) {
+                              setState(() {
+                                selectedDeadline = DateTime(
+                                  pickedDate.year,
+                                  pickedDate.month,
+                                  pickedDate.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                );
+                              });
+                            }
+                          });
+                        }
+                      });
+                    },
+                    child: const Text('Выбрать дедлайн'),
+                  ),
+                ),
+                // Display the selected deadline (if any)
+                if (selectedDeadline != null)
+                  Text('Выбранный дедлайн: ${selectedDeadline.toString()}'),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +147,11 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddTaskDialog,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
+
