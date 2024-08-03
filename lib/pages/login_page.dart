@@ -37,8 +37,52 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ... (Your logo and "DoDidDone" text)
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/0qode_symbol_1.png', // Замените на правильный путь к файлу
+                    height: 60, // Устанавливаем высоту изображения
+                  ),
+                  const SizedBox(width: 8),
+                  // Добавляем текст "zerocoder"
+                  Text(
+                    'zerocoder',
+                    style: TextStyle(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Белый цвет текста
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 62,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'Do',
+                      style: TextStyle(
+                        color: DoDidDoneTheme.lightTheme.colorScheme.primary,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Did',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    TextSpan(
+                      text: 'Done',
+                      style: TextStyle(
+                        color: DoDidDoneTheme.lightTheme.colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 30),
               // Заголовок
               Text(
@@ -123,5 +167,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
 
