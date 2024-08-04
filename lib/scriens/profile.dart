@@ -1,12 +1,37 @@
 import 'package:flutter/material.dart';
 import '../pages/login_page.dart';
+import '../services/firebase_auth.dart'; // Импортируем AuthenticationService
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
+
 class _ProfilePageState extends State<ProfilePage> {
   bool isEmailVerified = false; // Флаг для проверки подтверждения почты
+  String? userAvatarUrl; // URL аватара пользователя
+  final AuthenticationService _authService = AuthenticationService(); // Создаем экземпляр AuthenticationService
+
+  @override
+  void initState() {
+    super.initState();
+    // Получаем информацию о пользователе
+    _getUserData();
+  }
+
+  // Метод для получения информации о пользователе
+  Future<void> _getUserData() async {
+    final user = _authService.getCurrentUser();
+    if (user != null) {
+      setState(() {
+        isEmailVerified = user.emailVerified;
+        userAvatarUrl = user.photoURL; // Получаем URL аватара
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -18,13 +43,14 @@ class _ProfilePageState extends State<ProfilePage> {
           // Аватар
           CircleAvatar(
             radius: 50,
-            backgroundImage: const AssetImage(
-                'assets/test.png'), // Замените на реальный путь к аватару
+            backgroundImage: userAvatarUrl != null
+                ? NetworkImage(userAvatarUrl!) // Используем URL аватара
+                : const AssetImage('assets/_1.png'), // Используем дефолтный аватар
           ),
           const SizedBox(height: 20),
           // Почта
           Text(
-            'example@email.com', // Замените на реальную почту пользователя
+            _authService.getCurrentUser()?.email ?? '', // Получаем почту пользователя
             style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(height: 10),
@@ -42,8 +68,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         'Письмо с подтверждением отправлено на ваш адрес.'),
                     actions: [
                       TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('OK'),
+                        onPressed: () => Navigator.pushReplacement(
+                         context,
+                         MaterialPageRoute(
+                            builder:(context) => const LoginPage())),// MaterialPageRoute
+                       child: const Text('OK'),
                       ),
                     ],
                   ),
@@ -54,13 +83,21 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 20),
           // Кнопка выхода из профиля
           ElevatedButton(
-            onPressed: () {
-              // Обработка выхода из профиля
-              // Например, можно перейти на страницу входа
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) {
-                return const LoginPage();
-              }));
+            onPressed: () async {
+              // Выход из системы
+              try {
+                await _authService.signOut();
+                // Переход на страницу входа
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              } catch (e) {
+                // Обработка ошибок
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Ошибка: ${e.toString()}')),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red, // Красный цвет для кнопки выхода
@@ -72,3 +109,5 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+
+
